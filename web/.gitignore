@@ -1,0 +1,14 @@
+# Web build
+build/
+.canvaskit/
+.dart_tool/
+
+# Cache
+.flutter/
+
+# Generated files
+*.js
+*.js.map
+*.dart.js
+*.part.js
+*.dart.js.map
