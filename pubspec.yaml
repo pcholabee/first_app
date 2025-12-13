@@ -9,7 +9,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  # Добавьте эти строки
   flutter_bloc: ^8.1.2
   bloc: ^8.1.1
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../cubit/main_screen_cubit.dart';
-import '../cubit/main_screen_state.dart';
+import 'cubit/main_screen_cubit.dart';
+import 'cubit/main_screen_state.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
@@ -26,11 +26,13 @@ class MainScreen extends StatelessWidget {
   }
 
   Widget _buildInputScreen(BuildContext context, MainScreenInputState state) {
-    final cubit = context.read<MainScreenCubit>();
+    final cubit = BlocProvider.of<MainScreenCubit>(context);
+    
+    // Используйте const для TextEditingController (опционально)
     final aController = TextEditingController(text: state.a?.toString() ?? '');
     final bController = TextEditingController(text: state.b?.toString() ?? '');
     final cController = TextEditingController(text: state.c?.toString() ?? '');
-
+    
     return Container(
       padding: const EdgeInsets.all(20.0),
       child: Column(
@@ -126,7 +128,7 @@ class MainScreen extends StatelessWidget {
   }
 
   Widget _buildResultScreen(BuildContext context, MainScreenResultState state) {
-    final cubit = context.read<MainScreenCubit>();
+    final cubit = BlocProvider.of<MainScreenCubit>(context);
 
     return Container(
       padding: const EdgeInsets.all(20.0),
