@@ -119,21 +119,21 @@ class _HistoryScreenContent extends StatelessWidget {
   }
 
   Widget _buildEmptyState() {
-    return const Center(
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.history_toggle_off, size: 64, color: Colors.grey),
-          SizedBox(height: 16),
-          Text(
+          const Icon(Icons.history_toggle_off, size: 64, color: Colors.grey),
+          const SizedBox(height: 16),
+          const Text(
             'История решений пуста',
             style: TextStyle(fontSize: 18, color: Colors.grey),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
             'Решите несколько уравнений,\nчтобы увидеть их здесь',
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 14,
               color: Color(0xFF757575),
             ),
@@ -179,9 +179,9 @@ class _HistoryScreenContent extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
+                Text(
                   'Уравнение',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),

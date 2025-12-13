@@ -1,20 +1,14 @@
-import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/equation_model.dart';
-import 'database_provider.dart';
 
 class StorageService {
   static final StorageService _instance = StorageService._internal();
   factory StorageService() => _instance;
   StorageService._internal();
 
-  // Используем оба хранилища
-  final DatabaseProvider _databaseProvider = DatabaseProvider();
-  
   static const String _lastCoefficientsKey = 'last_coefficients';
   static const String _totalCalculationsKey = 'total_calculations';
-
-  // === SharedPreferences методы (простые данные) ===
+  static const String _historyKey = 'equation_history';
 
   Future<void> saveLastCoefficients(double a, double b, double c) async {
     final prefs = await SharedPreferences.getInstance();
@@ -33,6 +27,7 @@ class StorageService {
           double.parse(parts[2]),
         ];
       } catch (_) {
+        // Игнорируем ошибки парсинга, возвращаем null
         return null;
       }
     }
@@ -50,114 +45,93 @@ class StorageService {
     return prefs.getInt(_totalCalculationsKey) ?? 0;
   }
 
-  // === DatabaseProvider методы (структурированные данные) ===
-
   Future<void> saveEquation(EquationSolution equation) async {
-    try {
-      // Создаем Map для сохранения
-      final equationMap = {
-        'id': equation.id ?? DateTime.now().millisecondsSinceEpoch,
-        'a': equation.a,
-        'b': equation.b,
-        'c': equation.c,
-        'equation_text': equation.equationText,
-        'solution_text': equation.solutionText,
-        'discriminant_text': equation.discriminantText,
-        'created_at': equation.createdAt.toIso8601String(),
-      };
-
-      // Сохраняем в DatabaseProvider (SQLite на мобильных, SharedPreferences на Web)
-      await _databaseProvider.insertEquation(equationMap);
-      
-      // Также сохраняем последние коэффициенты
-      await saveLastCoefficients(equation.a, equation.b, equation.c);
-      
-      // Увеличиваем счетчик расчетов
-      await incrementTotalCalculations();
-      
-    } catch (e) {
-      debugPrint('Error saving equation: $e');
-      rethrow;
+    final prefs = await SharedPreferences.getInstance();
+    final List<String> history = prefs.getStringList(_historyKey) ?? [];
+    
+    final equationData = {
+      'id': DateTime.now().millisecondsSinceEpoch.toString(),
+      'a': equation.a.toString(),
+      'b': equation.b.toString(),
+      'c': equation.c.toString(),
+      'equation_text': equation.equationText,
+      'solution_text': equation.solutionText,
+      'discriminant_text': equation.discriminantText,
+      'created_at': equation.createdAt.toIso8601String(),
+    };
+    
+    history.add('${equationData['id']}|${equationData['a']}|${equationData['b']}|${equationData['c']}|${equationData['equation_text']}|${equationData['solution_text']}|${equationData['discriminant_text']}|${equationData['created_at']}');
+    
+    // Сохраняем только последние 50 записей
+    if (history.length > 50) {
+      history.removeAt(0);
     }
+    
+    await prefs.setStringList(_historyKey, history);
   }
 
   Future<List<EquationSolution>> getAllEquations() async {
-    try {
-      // Получаем данные из DatabaseProvider
-      final data = await _databaseProvider.getAllEquations();
-      
-      final List<EquationSolution> equations = [];
-      
-      for (final map in data) {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String>? history = prefs.getStringList(_historyKey);
+    
+    if (history == null || history.isEmpty) {
+      return [];
+    }
+    
+    final List<EquationSolution> equations = [];
+    
+    for (final entry in history) {
+      final parts = entry.split('|');
+      if (parts.length >= 8) {
         try {
           final equation = EquationSolution(
-            id: map['id'] is int ? map['id'] as int : int.tryParse(map['id'].toString()),
-            a: (map['a'] as num).toDouble(),
-            b: (map['b'] as num).toDouble(),
-            c: (map['c'] as num).toDouble(),
-            equationText: map['equation_text'] as String,
-            solutionText: map['solution_text'] as String,
-            discriminantText: map['discriminant_text'] as String,
-            createdAt: DateTime.parse(map['created_at'] as String),
+            id: int.tryParse(parts[0]),
+            a: double.parse(parts[1]),
+            b: double.parse(parts[2]),
+            c: double.parse(parts[3]),
+            equationText: parts[4],
+            solutionText: parts[5],
+            discriminantText: parts[6],
+            createdAt: DateTime.parse(parts[7]),
           );
           equations.add(equation);
-        } catch (e) {
-          debugPrint('Error parsing equation: $e');
+        } catch (_) {
+          // Пропускаем некорректные записи
           continue;
         }
       }
-      
-      return equations;
-    } catch (e) {
-      debugPrint('Error getting equations: $e');
-      return [];
     }
+    
+    // Сортируем по дате создания (новые сначала)
+    equations.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    
+    return equations;
   }
 
   Future<void> deleteEquation(int id) async {
-    try {
-      await _databaseProvider.deleteEquation(id);
-    } catch (e) {
-      debugPrint('Error deleting equation: $e');
+    final prefs = await SharedPreferences.getInstance();
+    final List<String>? history = prefs.getStringList(_historyKey);
+    
+    if (history != null) {
+      final newHistory = history.where((entry) {
+        final parts = entry.split('|');
+        if (parts.isNotEmpty) {
+          return parts[0] != id.toString();
+        }
+        return true;
+      }).toList();
+      
+      await prefs.setStringList(_historyKey, newHistory);
     }
   }
 
   Future<void> clearAllEquations() async {
-    try {
-      await _databaseProvider.clearAllEquations();
-    } catch (e) {
-      debugPrint('Error clearing equations: $e');
-    }
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_historyKey);
   }
 
   Future<void> clearAllPreferences() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.clear();
-    } catch (e) {
-      debugPrint('Error clearing preferences: $e');
-    }
-  }
-
-  // Дополнительные методы для статистики
-  
-  Future<int> getEquationCount() async {
-    try {
-      return await _databaseProvider.getEquationCount();
-    } catch (e) {
-      return 0;
-    }
-  }
-  
-  Future<Map<String, dynamic>> getStatistics() async {
-    final totalCalculations = await getTotalCalculations();
-    final equationCount = await getEquationCount();
-    final lastCoefficients = await getLastCoefficients();
-    
-    return {
-      'total_calculations': totalCalculations,
-      'saved_equations': equationCount,
-      'last_coefficients': lastCoefficients,
-    };
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
   }
 }

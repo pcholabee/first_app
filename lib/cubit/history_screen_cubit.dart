@@ -43,6 +43,7 @@ class HistoryScreenCubit extends Cubit<HistoryScreenState> {
   Future<void> clearAllHistory() async {
     try {
       await _storageService.clearAllEquations();
+      await _storageService.clearAllPreferences();
       await loadHistory();
     } catch (e) {
       if (kDebugMode) {
