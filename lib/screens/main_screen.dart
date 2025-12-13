@@ -61,7 +61,7 @@ class MainScreen extends StatelessWidget {
           
           TextFormField(
             controller: aController,
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
             decoration: InputDecoration(
               labelText: 'Коэффициент a',
               border: const OutlineInputBorder(),
@@ -73,7 +73,7 @@ class MainScreen extends StatelessWidget {
           
           TextFormField(
             controller: bController,
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
             decoration: InputDecoration(
               labelText: 'Коэффициент b',
               border: const OutlineInputBorder(),
@@ -85,7 +85,7 @@ class MainScreen extends StatelessWidget {
           
           TextFormField(
             controller: cController,
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
             decoration: InputDecoration(
               labelText: 'Коэффициент c',
               border: const OutlineInputBorder(),
