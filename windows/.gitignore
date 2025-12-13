@@ -1,17 +1,19 @@
-flutter/ephemeral/
-
-# Visual Studio user-specific files.
+# Visual Studio
+.vs/
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
 *.suo
-*.user
-*.userosscache
-*.sln.docstates
+*.opensdf
+*.sdf
+ipch/
+[Dd]ebug*/
+[Rr]elease*/
 
-# Visual Studio build-related files.
-x64/
-x86/
-
-# Visual Studio cache files
-# files ending in .cache can be ignored
-*.[Cc]ache
-# but keep track of directories ending in .cache
-!*.[Cc]ache/
+# Flutter
+build/
+.flutter-plugins
+.generated/
+*.dll
+*.pdb
