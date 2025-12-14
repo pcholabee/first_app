@@ -1,16 +1,18 @@
-# General
 .DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+.vscode/
+.idea/
 *.iml
 *.ipr
 *.iws
-.idea/
-.vscode/
 *.swp
 *.swo
 *~
-Thumbs.db
+*.log
 
-# Flutter
+
 .packages
 .pub-cache/
 .pub/
@@ -18,12 +20,12 @@ Thumbs.db
 .flutter-plugins-dependencies
 .pubspec.lock
 .dart_tool/
+build/                  
+lib/generated_plugin_registrant.dart
 
-# Coverage
+
 coverage/
 *.lcov
-
-# Packages
 *.7z
 *.dmg
 *.gz
@@ -33,11 +35,32 @@ coverage/
 *.tar
 *.zip
 
-# Logs
-*.log
 
-# OS generated files
-.DS_Store?
-ehthumbs.db
-Icon?
-Thumbs.db
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+
+
+ios/Flutter/
+ios/.symlinks/
+ios/build/
+ios/Runner.xcworkspace/
+ios/Runner.xcodeproj/project.xcworkspace/
+ios/Runner.xcodeproj/xcuserdata/
+
+
+macos/Flutter/
+macos/build/
+macos/Runner.xcworkspace/
+macos/Runner.xcodeproj/project.xcworkspace/
+macos/Runner.xcodeproj/xcuserdata/
+
+
+linux/build/
+
+
+windows/build/
+
+
+web/build/
