@@ -20,7 +20,7 @@ Icon?
 .flutter-plugins-dependencies
 .pubspec.lock
 .dart_tool/
-build/                  # ← ВАЖНО: общая папка сборки Flutter
+build/                  
 lib/generated_plugin_registrant.dart
 
 
