@@ -1,17 +1,16 @@
 .DS_Store
 Thumbs.db
 ehthumbs.db
-Icon?
+Icon
+*.swp
+*.swo
+*~
+
 .vscode/
 .idea/
 *.iml
 *.ipr
 *.iws
-*.swp
-*.swo
-*~
-*.log
-
 
 .packages
 .pub-cache/
@@ -20,12 +19,12 @@ Icon?
 .flutter-plugins-dependencies
 .pubspec.lock
 .dart_tool/
-build/                  
-lib/generated_plugin_registrant.dart
 
+/build/
 
 coverage/
 *.lcov
+
 *.7z
 *.dmg
 *.gz
@@ -36,31 +35,9 @@ coverage/
 *.zip
 
 
-android/app/build/
-android/build/
-android/.gradle/
-android/local.properties
-
-
-ios/Flutter/
-ios/.symlinks/
-ios/build/
-ios/Runner.xcworkspace/
-ios/Runner.xcodeproj/project.xcworkspace/
-ios/Runner.xcodeproj/xcuserdata/
-
-
-macos/Flutter/
-macos/build/
-macos/Runner.xcworkspace/
-macos/Runner.xcodeproj/project.xcworkspace/
-macos/Runner.xcodeproj/xcuserdata/
-
-
-linux/build/
-
-
-windows/build/
-
-
-web/build/
+/ios
+/linux
+/macos
+/web
+/windows
+/android
