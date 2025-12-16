@@ -36,31 +36,16 @@ coverage/
 *.zip
 
 
-android/app/build/
-android/build/
-android/.gradle/
-android/local.properties
+android/
+
+ios/
+
+linux/
+
+macos/
+
+web/
+
+windows/
 
 
-ios/Flutter/
-ios/.symlinks/
-ios/build/
-ios/Runner.xcworkspace/
-ios/Runner.xcodeproj/project.xcworkspace/
-ios/Runner.xcodeproj/xcuserdata/
-
-
-macos/Flutter/
-macos/build/
-macos/Runner.xcworkspace/
-macos/Runner.xcodeproj/project.xcworkspace/
-macos/Runner.xcodeproj/xcuserdata/
-
-
-linux/build/
-
-
-windows/build/
-
-
-web/build/
