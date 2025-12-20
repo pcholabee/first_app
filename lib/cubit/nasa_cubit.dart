@@ -3,15 +3,19 @@ import '../requests/api.dart';
 import 'nasa_state.dart';
 
 class NasaCubit extends Cubit<NasaState> {
-  NasaCubit() : super(NasaInitial());
+  NasaCubit() : super(const NasaInitial());
 
-  void loadData(String rover, int sol) async {
-    emit(NasaLoading());
+  void loadData() async {
+    emit(const NasaLoading());
     try {
-      final nasaResponse = await ApiService.getPhotos(rover, sol);
-      emit(NasaLoaded(nasaResponse.photos));
+      final nasaResponse = await ApiService.getPhotos();
+      if (nasaResponse.photos.isNotEmpty) {
+        emit(NasaLoaded(nasaResponse.photos));
+      } else {
+        emit(const NasaError('Нет доступных изображений'));
+      }
     } catch (e) {
-      emit(NasaError('Ошибка загрузки: $e'));
+      emit(NasaError('Ошибка: $e'));
     }
   }
 }

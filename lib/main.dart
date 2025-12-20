@@ -14,10 +14,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'NASA Spirit Rover',
+      title: 'Random Cats',
       theme: ThemeData(primarySwatch: Colors.blue),
       home: BlocProvider(
-        create: (context) => NasaCubit()..loadData('spirit', 50),
+        create: (context) => NasaCubit()..loadData(),
         child: const HomePage(),
       ),
     );
@@ -31,14 +31,34 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Spirit Rover - Сол 50'),
+        title: const Text('Random Cat Images'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              context.read<NasaCubit>().loadData();
+            },
+          ),
+        ],
       ),
       body: BlocBuilder<NasaCubit, NasaState>(
         builder: (context, state) {
           if (state is NasaLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is NasaError) {
-            return Center(child: Text(state.message));
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(state.message),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () => context.read<NasaCubit>().loadData(),
+                    child: const Text('Попробовать снова'),
+                  ),
+                ],
+              ),
+            );
           } else if (state is NasaLoaded) {
             return _buildPhotoList(state.photos);
           }
@@ -49,10 +69,6 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildPhotoList(List<Photo> photos) {
-    if (photos.isEmpty) {
-      return const Center(child: Text('Фотографии не найдены'));
-    }
-
     return ListView.builder(
       itemCount: photos.length,
       itemBuilder: (context, index) {
@@ -62,14 +78,14 @@ class HomePage extends StatelessWidget {
           child: Column(
             children: [
               Image.network(
-                photo.imgSrc,
+                photo.url,
                 width: double.infinity,
-                height: 200,
+                height: 300,
                 fit: BoxFit.cover,
                 loadingBuilder: (context, child, loadingProgress) {
                   if (loadingProgress == null) return child;
                   return SizedBox(
-                    height: 200,
+                    height: 300,
                     child: Center(
                       child: CircularProgressIndicator(
                         value: loadingProgress.expectedTotalBytes != null
@@ -81,9 +97,9 @@ class HomePage extends StatelessWidget {
                   );
                 },
                 errorBuilder: (context, error, stackTrace) {
-                  return SizedBox(
-                    height: 200,
-                    child: const Center(
+                  return const SizedBox(
+                    height: 300,
+                    child: Center(
                       child: Icon(Icons.error, color: Colors.red),
                     ),
                   );
@@ -91,21 +107,7 @@ class HomePage extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.all(12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'ID: ${photo.id}',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 4),
-                    Text('Сол: ${photo.sol}'),
-                    Text('Камера: ${photo.camera.fullName}'),
-                    Text('Дата на Земле: ${photo.earthDate}'),
-                    Text('Марсоход: ${photo.rover.name}'),
-                    Text('Статус: ${photo.rover.status}'),
-                  ],
-                ),
+                child: Text('ID: ${photo.id}'),
               ),
             ],
           ),
